@@ -58,6 +58,16 @@
     var headerWrap = $(".it-header-height");
     if (headerWrap) headerWrap.style.height = headerWrap.offsetHeight + "px";
 
+    var fixedHeader = $(".it-header-fixed");
+    function updateHeaderOffset() {
+      if (!fixedHeader) return;
+      var h = fixedHeader.offsetHeight;
+      document.body.style.paddingTop = h + "px";
+      document.documentElement.style.scrollPaddingTop = h + "px";
+    }
+    updateHeaderOffset();
+    window.addEventListener("resize", updateHeaderOffset);
+
     var sticky = $("#header-sticky");
     var toTop = $(".scroll-to-target");
 
