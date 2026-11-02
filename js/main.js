@@ -44,13 +44,20 @@
   function initPreloader() {
     var loader = $("#it-loading");
     if (!loader) return;
+    var hidden = false;
     var hide = function () {
+      if (hidden) return;
+      hidden = true;
       loader.style.transition = "opacity 500ms ease";
       loader.style.opacity = "0";
       setTimeout(function () { loader.style.display = "none"; }, 500);
     };
-    if (document.readyState === "complete") hide();
-    else window.addEventListener("load", hide);
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", hide);
+    } else {
+      hide();
+    }
+    window.setTimeout(hide, 2500);
   }
 
   /* ---------- 02. Tinggi header + sticky header + tombol scroll-top ---------- */
@@ -153,6 +160,90 @@
         if (sub) slideToggle(sub);
       });
     });
+  }
+
+  /* ---------- 04b. Scrollspy menu navbar ---------- */
+  function initScrollSpy() {
+    var links = $$('.it-menu-content a[href^="#"], .it-menu-mobile a[href^="#"]');
+    if (!links.length) return;
+
+    var sections = [];
+    links.forEach(function (link) {
+      var target = $(link.getAttribute("href"));
+      if (target && sections.indexOf(target) === -1) sections.push(target);
+    });
+    if (!sections.length) return;
+
+    var header = $(".it-header-fixed");
+
+    function update() {
+      var offset = (header ? header.offsetHeight : 0) + 12;
+      var pos = window.scrollY + offset;
+      var current = sections[0];
+
+      for (var i = 0; i < sections.length; i++) {
+        if (sections[i].getBoundingClientRect().top + window.scrollY <= pos) {
+          current = sections[i];
+        }
+      }
+
+      var doc = document.documentElement;
+      if (window.innerHeight + window.scrollY >= doc.scrollHeight - 2) {
+        current = sections[sections.length - 1];
+      }
+
+      links.forEach(function (link) {
+        var isActive = link.getAttribute("href") === "#" + current.id;
+        link.classList.toggle("active", isActive);
+        if (isActive) link.setAttribute("aria-current", "true");
+        else link.removeAttribute("aria-current");
+      });
+    }
+
+    var ticking = false;
+    window.addEventListener(
+      "scroll",
+      function () {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(function () {
+          update();
+          ticking = false;
+        });
+      },
+      { passive: true }
+    );
+    window.addEventListener("resize", update);
+    update();
+  }
+
+  /* ---------- 04c. Scroll progress ---------- */
+  function initScrollProgress() {
+    var bar = $(".scroll-progress-bar");
+    if (!bar) return;
+
+    function update() {
+      var doc = document.documentElement;
+      var max = doc.scrollHeight - window.innerHeight;
+      var progress = max > 0 ? window.scrollY / max : 0;
+      bar.style.transform = "scaleX(" + Math.min(Math.max(progress, 0), 1) + ")";
+    }
+
+    var ticking = false;
+    window.addEventListener(
+      "scroll",
+      function () {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(function () {
+          update();
+          ticking = false;
+        });
+      },
+      { passive: true }
+    );
+    window.addEventListener("resize", update);
+    update();
   }
 
   /* ---------- 05. Select kustom (pengganti jQuery niceSelect) ---------- */
@@ -407,6 +498,8 @@
   initHeaderAndScroll();
   initOffcanvas();
   initMobileMenu();
+  initScrollSpy();
+  initScrollProgress();
   initNiceSelect();
   initCounters();
   initReveal();
