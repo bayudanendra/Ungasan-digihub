@@ -27787,10 +27787,13 @@ a.ct-info-card {
   align-items: center;
   gap: 14px;
 }
+<<<<<<< HEAD
 .dt-footer-follow li > div {
   min-width: 0;
   flex: 1 1 auto;
 }
+=======
+>>>>>>> a6ac570c6e68e2fdac19402a5d7641bfeda39996
 .dt-footer-follow-icon {
   flex: 0 0 auto;
   width: 44px;
@@ -27822,8 +27825,11 @@ a.ct-info-card {
   color: var(--it-common-white);
   font-size: 15px;
   line-height: 1.5;
+<<<<<<< HEAD
   overflow-wrap: anywhere;
   word-break: break-word;
+=======
+>>>>>>> a6ac570c6e68e2fdac19402a5d7641bfeda39996
   transition: 0.3s;
 }
 .dt-footer-follow a:hover {
