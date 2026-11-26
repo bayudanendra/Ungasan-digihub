@@ -27822,8 +27822,7 @@ a.ct-info-card {
   color: var(--it-common-white);
   font-size: 15px;
   line-height: 1.5;
-  overflow-wrap: anywhere;
-  word-break: break-word;
+  white-space: nowrap;
   transition: 0.3s;
 }
 .dt-footer-follow a:hover {
